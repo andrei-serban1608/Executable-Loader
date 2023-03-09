@@ -1,0 +1,23 @@
+Să se implementeze sub forma unei biblioteci partajate/dinamice un loader de fișiere executabile în format ELF pentru Linux. Loader-ul va încărca fișierul executabil în memorie pagină cu pagină, folosind un mecanism de tipul demand paging - o pagină va fi încărcată doar în momentul în care este nevoie de ea. Pentru simplitate, loader-ul va rula doar executabile statice - care nu sunt link-ate cu biblioteci partajate/dinamice.
+
+Pentru a rula un fișier executabil, loader-ul va executa următorii pași:
+
+Își va inițializa structurile interne.
+
+Va parsa fișierul binar - pentru a face asta aveți la dispozitie în scheletul temei un parser de fișiere ELF pe Linux. Găsiți mai multe detalii în secțiunea care descrie interfața parserului de executabile.
+
+Va rula prima instrucțiune a executabilului (entry point-ul).
+
+de-a lungul execuției, se va genera câte un page fault pentru fiecare acces la o pagină nemapată în memorie;
+
+Va detecta fiecare acces la o pagină nemapată, și va verifica din ce segment al executabilului face parte.
+
+dacă nu se găsește într-un segment, înseamnă că este un acces invalid la memorie – se rulează handler-ul default de page fault;
+
+dacă page fault-ul este generat într-o pagină deja mapată, atunci se încearcă un acces la memorie nepermis (segmentul respectiv nu are permisiunile necesare) – la fel, se rulează handler-ul default de page fault;
+
+dacă pagina se găsește într-un segment, și ea încă nu a fost încă mapată, atunci se mapează la adresa aferentă, cu permisiunile acelui segment;
+
+Veți folosi funcția mmap (Linux) pentru a aloca memoria virtuală în cadrul procesului.
+
+Pagina trebuie mapată fix la adresa indicată în cadrul segmentului.
